@@ -1,0 +1,11 @@
+Instructions are in the sheet1.pdf 
+
+usefull commands.
+
+make -s PARAMS="-d -l 8000"
+
+make PARAMS="-d -l 200000 400000 10000"
+
+make PARAMS="-d -l <size_min> <size_max> <size_step>"
+
+
