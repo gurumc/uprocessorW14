@@ -18,23 +18,27 @@ int no_sz = 1, no_ratio =1, no_version=1;
 static inline
 double gettime(void) {
   // to be implemented: implemented gmc
-	
+	struct timeval *tv;
+	struct timezone *tz;		
+	int i;
+	i = gettimeofday(tv,tz);
+	return (double )tv->tv_usec;
 
 }
 
 
 static void toupper_simple(char * text) {
-  // to be implemented
+  // to be implemented:done gmc
 	int i=0;
 	for(i=0;i<strlen(text);i++)
 	{
-		if(text[i] >= 'a' && text[i] <= 'z')
+		if(text[i] > 96 && text[i] < 123)
 		{
-			text[i] -= 32;	
+			text[i] -= 0x20;	
 		}
 
 	}
-
+	return;
 }
 
 
@@ -99,7 +103,7 @@ void run_toupper(int size, int ratio, int version, toupperfunc f, const char* na
 
     char *text = init(sizes[size], ratios[ratio]);
 
-
+    printf("i'm inside run_t %s",text);	
     if(debug) printf("Before: %.40s...\n",text);
 
     start = gettime();
