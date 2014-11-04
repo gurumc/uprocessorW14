@@ -18,11 +18,15 @@ int no_sz = 1, no_ratio =1, no_version=1;
 static inline
 double gettime(void) {
   // to be implemented: implemented gmc
-	struct timeval *tv;
-	struct timezone *tz;		
-	int i;
-	i = gettimeofday(tv,tz);
-	return (double )tv->tv_usec;
+  // modified by vinod
+ /*The  use of the timezone structure is obsolete; the tz argument should normally be specified as NULL.*/
+ 
+	struct timeval tv;
+	struct timezone tz;		
+	double i;
+	gettimeofday(&tv,NULL);
+	i = tv.tv_usec;
+        return i;
 
 }
 
