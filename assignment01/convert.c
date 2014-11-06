@@ -4,24 +4,24 @@ int convert(char *str)
 {
 
 
-char *ptr;
+//char *ptr;
 
-__asm__ __volatile__ ( "movl %1,%%ebx;"
-		       "subl $1,%%ebx;"
-  		"REPEAT: addl $1,%%ebx;"
+__asm__ __volatile__ ("subl $1,%%ebx;"
+  		"REPEAT:addl $1,%%ebx;"
 			"movl 0(%%ebx),%%edx;"
 		   	"movzbl  %%dl,%%ecx;"
 		 	"testl %%ecx,%%ecx;"
 		  	"je END;"
-		         "cmpl $97,%%ecx;"
+		        "cmpl $97,%%ecx;"
 		   	"jb REPEAT;"
 			"cmpl $122,%%ecx; "
 		        "ja REPEAT;"
 		 	"subl $32,(%%ebx);"
 		 	"jmp REPEAT;"
-		"END:mov %%ebx,%0;"
-			:"=r" (ptr)
-			:"r"  (str)
+		"END:;"
+			:
+			:"b"  (str)
+			:"ecx","edx"
  		     );
 
 printf("d = %s\n",str);
