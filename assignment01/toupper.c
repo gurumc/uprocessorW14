@@ -48,8 +48,8 @@ static void toupper_simple(char *text) {
 
 static void toupper_optimized(char *text) {
   // to be implemented
- char *ptr;
- __asm__ __volatile__ ( "movl %1,%%ebx;"
+// char *ptr;
+ __asm__ __volatile__(             //"movl %1,%%ebx;"
 		       "subl $1,%%ebx;"
   		"REPEAT: addl $1,%%ebx;"
 			"movl 0(%%ebx),%%edx;"
@@ -62,9 +62,9 @@ static void toupper_optimized(char *text) {
 		        "ja REPEAT;"
 		 	"subl $32,(%%ebx);"
 		 	"jmp REPEAT;"
-		"END:mov %%ebx,%0;"
-			:"=r" (ptr)
-			:"r"  (text)
+		"END:;"
+			:
+			:"b"  (text)
  		     );
 
 //printf("d = %s\n",str);
@@ -129,7 +129,7 @@ void run_toupper(int size, int ratio, int version, toupperfunc f, const char* na
 
     char *text = init(sizes[size], ratios[ratio]);
 
-    printf("i'm inside run_t %s",text);	
+    //printf("i'm inside run_t %s",text);	
     if(debug) printf("Before: %.40s...\n",text);
 
     start = gettime();
