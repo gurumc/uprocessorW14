@@ -31,14 +31,14 @@ double gettime(void) {
 }
 
 
-static void toupper_simple(char * text) {
+static void toupper_simple(char *text) {
   // to be implemented:done gmc
 	int i=0;
-	for(i=0;i<strlen(text);i++)
+	for(i=0;text[i]!='\0';i++)
 	{
-		if(text[i] > 96 && text[i] < 123)
+		if(text[i] >= 'a' && text[i] <= 'z')
 		{
-			text[i] -= 0x20;	
+			text[i] -= 32;	
 		}
 
 	}
@@ -46,8 +46,30 @@ static void toupper_simple(char * text) {
 }
 
 
-static void toupper_optimized(char * text) {
+static void toupper_optimized(char *text) {
   // to be implemented
+ char *ptr;
+ __asm__ __volatile__ ( "movl %1,%%ebx;"
+		       "subl $1,%%ebx;"
+  		"REPEAT: addl $1,%%ebx;"
+			"movl 0(%%ebx),%%edx;"
+		   	"movzbl  %%dl,%%ecx;"
+		 	"testl %%ecx,%%ecx;"
+		  	"je END;"
+		         "cmpl $97,%%ecx;"
+		   	"jb REPEAT;"
+			"cmpl $122,%%ecx; "
+		        "ja REPEAT;"
+		 	"subl $32,(%%ebx);"
+		 	"jmp REPEAT;"
+		"END:mov %%ebx,%0;"
+			:"=r" (ptr)
+			:"r"  (text)
+ 		     );
+
+//printf("d = %s\n",str);
+//return; 
+ 
 }
 
 
