@@ -68,7 +68,7 @@ static void toupper_optimized(char *text) {
  		     );
 
 //printf("d = %s\n",str);
-//return; 
+return; 
  
 }
 
