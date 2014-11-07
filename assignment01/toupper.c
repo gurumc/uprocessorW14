@@ -4,7 +4,8 @@
 #include <errno.h>
 #include <sys/time.h>
 #include "options.h"
-
+#include <smmintrin.h>
+#include <pmmintrin.h>
 
 int debug = 0;
 double *results;
@@ -45,34 +46,39 @@ static void toupper_simple(char *text) {
 	return;
 }
 
-
-static void toupper_optimized(char *text) {
+static void toupper_optimized(char * text) {
   // to be implemented
-// char *ptr;
- __asm__ __volatile__(             //"movl %1,%%ebx;"
-		       "subl $1,%%ebx;"
-  		"REPEAT: addl $1,%%ebx;"
-			"movl 0(%%ebx),%%edx;"
-		   	"movzbl  %%dl,%%ecx;"
-		 	"testl %%ecx,%%ecx;"
-		  	"je END;"
-		         "cmpl $97,%%ecx;"
-		   	"jb REPEAT;"
-			"cmpl $122,%%ecx; "
-		        "ja REPEAT;"
-		 	"subl $32,(%%ebx);"
-		 	"jmp REPEAT;"
-		"END:;"
-			:
-			:"b"  (text)
- 		     );
+	size_t offset = 0;
+	int len = 0;
+     __m128i b1, mask1, mask2, upper1, upper2, delta;
 
-//printf("d = %s\n",str);
-return; 
- 
+     /* setup registers for upper to lower conversion */
+     upper1 = _mm_set1_epi8(0x60);
+     upper2 = _mm_set1_epi8(0x7B);
+     delta  = _mm_set1_epi8(0x20);
+     len = strlen(text);
+
+
+     do {
+         b1 = _mm_loadu_si128((__m128i *) text);
+
+         /* mark all chars bigger than upper1 */
+         mask1 = _mm_cmpgt_epi8(b1, upper1);
+         /* mark all chars lower than upper2 */
+         mask2 = _mm_cmplt_epi8(b1, upper2);
+
+         mask1 = _mm_and_si128(delta, _mm_and_si128(mask1, mask2) );
+
+         _mm_storeu_si128( (__m128i *) (text), _mm_sub_epi8(b1, mask1) );
+
+         offset += 16;
+         text += 16;
+
+        }while (len > offset);
+
+     return;
+
 }
-
-
 /*****************************************************************/
 
 
